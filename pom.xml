@@ -14,7 +14,7 @@
 	<name>rona-virus-tracker</name>
 	<description>It is a CoronaVirus_Tracker</description>
 	<properties>
-		<java.runtime.version>11</java.runtime.version>
+		<java.runtime.version>12</java.runtime.version>
 	</properties>
 	<dependencies>
 		<dependency>
