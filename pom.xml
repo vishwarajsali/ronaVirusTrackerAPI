@@ -14,7 +14,9 @@
 	<name>rona-virus-tracker</name>
 	<description>It is a CoronaVirus_Tracker</description>
 	<properties>
-		<java.runtime.version>12</java.runtime.version>
+		<java.version>12</java.version>
+		<maven.compiler.source>12</maven.compiler.source>
+		<maven.compiler.target>12</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
