@@ -29,8 +29,7 @@ public class CoronaVirusDataService {
     @Value("${COVID19_MATHDRO}")
     private String MATH_DRO_URL;
 
-    @Value("value")
-    private static String Value;
+    private static final String Value = "value";
 
     public ArrayList<Countries> callToMathDroToGetCountries() throws IOException, InterruptedException {
         log.info("/api/countries: getting all countries and their ISO codes");
