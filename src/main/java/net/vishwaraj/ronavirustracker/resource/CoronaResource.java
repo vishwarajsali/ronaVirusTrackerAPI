@@ -3,7 +3,7 @@ package net.vishwaraj.ronavirustracker.resource;
 import net.vishwaraj.ronavirustracker.models.CaseData;
 
 import net.vishwaraj.ronavirustracker.models.Countries;
-import net.vishwaraj.ronavirustracker.services.CachingDataService;
+import net.vishwaraj.ronavirustracker.repository.CachingDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,15 +16,15 @@ import java.util.List;
 public class CoronaResource {
 
     @Autowired
-    private CachingDataService cachingDataService;
+    private CachingDataRepository cachingDataRepository;
 
     @GetMapping("/countries")
     public List<Countries> getAllCountries(){
-        return cachingDataService.getCountries();
+        return cachingDataRepository.getCountries();
     }
 
-    @GetMapping
+    @GetMapping("/getGlobal")
     public CaseData getGlobalData(){
-        return cachingDataService.getGlobalData();
+        return cachingDataRepository.getGlobalData();
     }
 }

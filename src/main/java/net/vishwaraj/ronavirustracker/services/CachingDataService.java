@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.vishwaraj.ronavirustracker.models.CaseData;
 import net.vishwaraj.ronavirustracker.models.Countries;
+import net.vishwaraj.ronavirustracker.repository.CachingDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 
 @Service
 @Slf4j
-public class CachingDataService {
+public class CachingDataService implements CachingDataRepository {
 
     @Autowired
     private CoronaVirusDataService coronaVirusDataService;
