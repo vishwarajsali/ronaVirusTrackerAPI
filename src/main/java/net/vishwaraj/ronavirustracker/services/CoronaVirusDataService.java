@@ -5,16 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.vishwaraj.ronavirustracker.models.CaseData;
 import net.vishwaraj.ronavirustracker.models.Countries;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -29,11 +25,11 @@ public class CoronaVirusDataService {
     @Value("${COVID19_MATHDRO}")
     private String MATH_DRO_URL;
 
-    private static final String Value = "value";
+    private static final String VALUE = "value";
 
-    public ArrayList<Countries> callToMathDroToGetCountries() throws IOException, InterruptedException {
+    public List<Countries> callToMathDroToGetCountries() throws IOException, InterruptedException {
         log.info("/api/countries: getting all countries and their ISO codes");
-        HttpResponse response = makeServiceToServiceGetCall(MATH_DRO_URL+"/countries");
+        HttpResponse response = makeServiceToServiceGetCall(MATH_DRO_URL +"/countries");
         log.info("{}", response.body());
         JsonObject allCountries = convertResponseToJSON(response);
         ArrayList<Countries> countries = new ObjectMapper().readValue(allCountries.get("countries").toString(), new TypeReference<ArrayList<Countries>>(){});
@@ -48,12 +44,27 @@ public class CoronaVirusDataService {
         JsonObject getGlobalData = convertResponseToJSON(response);
         log.info("caching all the countries: {}",getGlobalData);
         CaseData global = new CaseData();
-        global.setConfirmed(getGlobalData.get("confirmed").getAsJsonObject().get(Value).getAsBigDecimal());
-        global.setRecovered(getGlobalData.get("recovered").getAsJsonObject().get(Value).getAsBigDecimal());
-        global.setDeaths(getGlobalData.get("deaths").getAsJsonObject().get(Value).getAsBigDecimal());
+        global.setConfirmed(getGlobalData.get("confirmed").getAsJsonObject().get(VALUE).getAsBigDecimal());
+        global.setRecovered(getGlobalData.get("recovered").getAsJsonObject().get(VALUE).getAsBigDecimal());
+        global.setDeaths(getGlobalData.get("deaths").getAsJsonObject().get(VALUE).getAsBigDecimal());
         global.setLastUpdate(getGlobalData.get("lastUpdate").getAsString());
         log.info("Global data : {}", global);
         return global;
+    }
+
+    public CaseData callCountryData(String country) throws IOException, InterruptedException {
+        log.info("/api: getting {} summary", country);
+        HttpResponse response = makeServiceToServiceGetCall(MATH_DRO_URL +"/countries/"+country);
+        log.info("{}", response.body());
+        JsonObject jsonResponse = convertResponseToJSON(response);
+        log.info("caching data for {} the countries: {}",country, jsonResponse);
+        CaseData countryData = new CaseData();
+        countryData.setConfirmed(jsonResponse.get("confirmed").getAsJsonObject().get(VALUE).getAsBigDecimal());
+        countryData.setRecovered(jsonResponse.get("recovered").getAsJsonObject().get(VALUE).getAsBigDecimal());
+        countryData.setDeaths(jsonResponse.get("deaths").getAsJsonObject().get(VALUE).getAsBigDecimal());
+        countryData.setLastUpdate(jsonResponse.get("lastUpdate").getAsString());
+        log.info("Country data : {}", countryData);
+        return countryData;
     }
 
     private HttpResponse makeServiceToServiceGetCall(String url) throws IOException, InterruptedException {
